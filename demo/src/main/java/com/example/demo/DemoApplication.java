@@ -25,8 +25,7 @@ public class DemoApplication {
         String filename = "D:\\Stock Pic.xlsx"; // Replace with your input file name
         String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         String outputFilename = "D:\\Output_" + timestamp + ".xlsx";
-        excelReader.readExcelAndCountOccurrences(filename, outputFilename, sheetNames);
-        System.out.println("Included");
+        excelReader.readExcelAndCountOccurrences(filename, outputFilename, sheetNames);     
         System.out.println("Included");
        
         
