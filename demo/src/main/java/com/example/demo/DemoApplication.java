@@ -28,6 +28,8 @@ public class DemoApplication {
         excelReader.readExcelAndCountOccurrences(filename, outputFilename, sheetNames);
 
         System.out.println("Included");
+	System.out.println("Conflict");
+		
  
 
         
