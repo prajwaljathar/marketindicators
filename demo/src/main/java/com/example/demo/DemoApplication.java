@@ -31,7 +31,11 @@ public class DemoApplication {
         System.out.println("Included");
         System.out.println("Included");
         System.out.println("Conflict");
+
         System.out.println("Within the git ");
+
+	System.out.println("Getting Better with conflict");
+
 		
  
 
