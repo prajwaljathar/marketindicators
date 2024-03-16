@@ -27,15 +27,6 @@ public class DemoApplication {
         String outputFilename = "D:\\Output_" + timestamp + ".xlsx";
         excelReader.readExcelAndCountOccurrences(filename, outputFilename, sheetNames);
 
-        
-        System.out.println("Included");
-        System.out.println("Included");
-        System.out.println("Conflict");
-
-        System.out.println("Within the git ");
-
-	System.out.println("Getting Better with conflict");
-
 		
  
 
