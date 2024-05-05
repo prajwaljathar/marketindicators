@@ -8,5 +8,7 @@ import com.example.demo.model.Instrument;
 @Repository
 public interface InstrumentRepository extends JpaRepository<Instrument, Long>  {
 
+	Instrument findByInstrumentKey(String instrumentKey);
+
 
 }

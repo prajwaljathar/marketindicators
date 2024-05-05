@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,22 +11,18 @@ import jakarta.persistence.Id;
 @Entity
 public class HistoricalDataInRangeEntity {
 
-    public HistoricalDataInRangeEntity(String instrumentKey, String date, Double price) {
-		super();		
-		this.instrumentKey = instrumentKey;
-		this.date = date;
-		this.price = price;
-	}
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String instrumentKey;
+    private String instrumentKey;   
 
-    private String date;
+    private LocalDate  date;
 
-    private Double price;
+    private Double percentageChange;
+    
+    private String instrumentName;
 
 	public Long getId() {
 		return id;
@@ -42,21 +40,31 @@ public class HistoricalDataInRangeEntity {
 		this.instrumentKey = instrumentKey;
 	}
 
-	public String getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(String date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 
-	public Double getPrice() {
-		return price;
+	public Double getPercentageChange() {
+		return percentageChange;
 	}
 
-	public void setPrice(Double price) {
-		this.price = price;
+	public void setPercentageChange(Double percentageChange) {
+		this.percentageChange = percentageChange;
 	}
+
+	public String getInstrumentName() {
+		return instrumentName;
+	}
+
+	public void setInstrumentName(String instrumentName) {
+		this.instrumentName = instrumentName;
+	}
+
+	
 
     // Constructors, getters, and setters
 }
