@@ -1,0 +1,3 @@
+Sample of EndPoints
+HistoricalDataInRange
+http://localhost:8443/historicaldatainrange?fromDate=2024-05-01&toDate=2024-05-09

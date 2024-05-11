@@ -187,7 +187,7 @@ public class UpstoxApiInitializer {
 
 		String redirectUrl = "redirect:" + "https://api.upstox.com/v2/login/authorization/dialog" + "?client_id="
 				+ "39a83b5d-3396-4947-82cb-3e5f8465e171" + "&redirect_uri="
-				+ "https://0e2e-103-205-173-26.ngrok-free.app" + "&response_type=" + "code";
+				+ "https://b707-103-205-173-26.ngrok-free.app" + "&response_type=" + "code";
 
 		return redirectUrl;
 	}
@@ -198,9 +198,9 @@ public class UpstoxApiInitializer {
 		kong.unirest.HttpResponse<String> response = Unirest.post("https://api.upstox.com/v2/login/authorization/token")
 				.header("Content-Type", "application/x-www-form-urlencoded").header("Accept", "application/json")
 				.field("grant_type", "authorization_code")
-				.field("redirect_uri", "https://0e2e-103-205-173-26.ngrok-free.app")
+				.field("redirect_uri", "https://b707-103-205-173-26.ngrok-free.app")
 				.field("client_secret", "aftixkz9rv").field("client_id", "39a83b5d-3396-4947-82cb-3e5f8465e171")
-				.field("code", "2WSXjR").asString();
+				.field("code", "YfgPxu").asString();
 
 		System.out.println("Response Body " + response.getBody());
 
@@ -212,7 +212,7 @@ public class UpstoxApiInitializer {
 	public String marketQuotes() throws IOException, InterruptedException {
 		String url = "https://api.upstox.com/v2/market-quote/quotes?instrument_key=NSE_EQ%7CINE669E01016";
 		String acceptHeader = "application/json";
-		String authorizationHeader = "Bearer eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiI3UUJTOEYiLCJqdGkiOiI2NjM1MmRkMmE1Yjg1MDBlNWMwMTZjZWUiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaXNBY3RpdmUiOnRydWUsInNjb3BlIjpbImludGVyYWN0aXZlIiwiaGlzdG9yaWNhbCJdLCJpYXQiOjE3MTQ3NjExNzAsImlzcyI6InVkYXBpLWdhdGV3YXktc2VydmljZSIsImV4cCI6MTcxNDc3MzYwMH0.lZa-ytaXr0p66PqrSw8krWwVO0NLdkFq31G7hzNBjLU";
+		String authorizationHeader = "Bearer eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiI3UUJTOEYiLCJqdGkiOiI2NjM5MTlkYWE1Yjg1MDBlNWMwMjFkZmUiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaXNBY3RpdmUiOnRydWUsInNjb3BlIjpbImludGVyYWN0aXZlIiwiaGlzdG9yaWNhbCJdLCJpYXQiOjE3MTUwMTgyMDIsImlzcyI6InVkYXBpLWdhdGV3YXktc2VydmljZSIsImV4cCI6MTcxNTAzMjgwMH0.I9cxGwO_nJuhrW0yqZOFulLusXIdDVGR9QZzk8jCtCo";
 
 		HttpClient httpClient = HttpClient.newHttpClient();
 		HttpRequest httpRequest = HttpRequest.newBuilder().uri(URI.create(url)).header("Accept", acceptHeader)

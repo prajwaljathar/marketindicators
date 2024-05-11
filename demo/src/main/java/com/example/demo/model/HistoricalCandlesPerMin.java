@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "historical_candles")
-public class HistoricalCandles {
+@Table(name = "historical_candles_per_min")
+public class HistoricalCandlesPerMin {
 	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
