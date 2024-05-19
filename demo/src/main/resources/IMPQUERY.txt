@@ -1,0 +1,91 @@
+SELECT t1.instrument_key,
+       MAX(CASE WHEN t1.date = '2024-05-03' THEN t1.percentage_change END) AS percentage_change_2024_05_03,
+       MAX(CASE WHEN t1.date = '2024-05-02' THEN t1.percentage_change END) AS percentage_change_2024_05_02,
+       MAX(CASE WHEN t1.date = '2024-04-30' THEN t1.percentage_change END) AS percentage_change_2024_04_30,
+       t1.instrument_name
+FROM marketindicator.historical_data_in_range_entity AS t1
+JOIN marketindicator.historical_data_in_range_entity AS t2 
+    ON t1.instrument_key = t2.instrument_key AND t2.date = '2024-05-03' AND t2.percentage_change BETWEEN 4 AND 6
+JOIN marketindicator.historical_data_in_range_entity AS t3 
+    ON t1.instrument_key = t3.instrument_key AND t3.date = '2024-05-02' AND t3.percentage_change BETWEEN 4 AND 6
+JOIN marketindicator.historical_data_in_range_entity AS t4 
+    ON t1.instrument_key = t4.instrument_key AND t4.date = '2024-04-30' AND t4.percentage_change NOT BETWEEN 4 AND 6
+WHERE t1.date IN ('2024-05-03', '2024-05-02', '2024-04-30')
+GROUP BY t1.instrument_key, t1.instrument_name;
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+INSERT INTO marketindicator.historical_candles (candle_time, close, high, instrument_key, low, open, open_interest, volume)
+SELECT 
+    timestamp AS candle_time,
+    ohlc_close AS close,
+    ohlc_high AS high,
+    instrument_token AS instrument_key,    
+    ohlc_low AS low,
+    ohlc_open AS open,
+    oi AS open_interest,
+    volume
+FROM marketindicator.market_data where Date(timestamp)="2024-05-16";
+
+--------------------------------------------------------------------------------
+UPDATE marketindicator.historical_candles 
+SET candle_time = '2024-05-13' 
+WHERE DATE(candle_time) = '2024-05-14';
+
+---------------------------------------------------------------------------------
+
+INSERT INTO marketindicator.historical_data_in_range_entity (date, instrument_key, percentage_change, instrument_name)
+SELECT
+    date_range.date AS date,
+    instrument_details.instrument_key,
+    IFNULL(((candles.close - previous_candle.close) / previous_candle.close) * 100, 0) AS percentage_change,
+    instrument_details.instument_name AS instrument_name
+FROM
+    (
+        SELECT
+            DATE_ADD('1970-01-01', INTERVAL t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i DAY) AS date
+        FROM
+            (SELECT 0 AS i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS t0,
+            (SELECT 0 AS i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS t1,
+            (SELECT 0 AS i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS t2,
+            (SELECT 0 AS i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS t3,
+            (SELECT 0 AS i UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) AS t4
+    ) AS date_range
+CROSS JOIN marketindicator.instrument_details AS instrument_details
+LEFT JOIN marketindicator.historical_candles AS candles ON candles.instrument_key = instrument_details.instrument_key AND DATE(candles.candle_time) = date_range.date
+LEFT JOIN marketindicator.historical_candles AS previous_candle ON previous_candle.instrument_key = candles.instrument_key AND DATE(previous_candle.candle_time) = DATE_SUB(date_range.date, INTERVAL 1 DAY)
+WHERE
+    date_range.date BETWEEN '2024-05-10' AND '2024-05-15'
+ORDER BY
+    instrument_details.instrument_key, date_range.date;
+
+--------------------------------------------------------------------------------------------------------------
+
+DELETE t1 
+FROM marketindicator.historical_data_in_range_entity t1
+JOIN (
+    SELECT date, instrument_key, MAX(id) AS max_id
+    FROM marketindicator.historical_data_in_range_entity
+    WHERE DATE(date) = '2024-05-15'
+    GROUP BY date, instrument_key
+    HAVING COUNT(*) > 1
+) AS duplicates ON t1.date = duplicates.date 
+                  AND t1.instrument_key = duplicates.instrument_key
+WHERE t1.id <> duplicates.max_id;
+------------------------------------------------------------------------------------------------------------
+
+UPDATE marketindicator.watchlist_entity w
+JOIN marketindicator.market_data m
+ON w.instrument_key = m.instrument_token
+SET w.last_price = m.last_price
+WHERE DATE(m.timestamp) = '2024-05-17'
+AND m.instrument_token IN ('BSE_EQINE415I01015', 'BSE_EQINE490G01020', 'BSE_EQINE732F01019', 'BSE_EQINE785D01012', 'BSE_EQINE884B01025', 'BSE_EQINE894E01028', 'BSE_EQINE918Z01012', 'BSE_EQINE960H01012');
+
+---------------------------------------------------------------------------------------------------------------
+SELECT * 
+FROM marketindicator.watchlist_entity 
+WHERE historical_percentage_change  BETWEEN 8 AND 12
+AND instrument_name IN (
+    SELECT instrument_name
+    FROM marketindicator.watchlist_entity
+    WHERE historical_percentage_change >= 18
+);
