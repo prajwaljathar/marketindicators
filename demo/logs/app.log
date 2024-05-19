@@ -609,3 +609,79 @@ Caused by: org.hibernate.HibernateException: Unable to determine Dialect without
 2024-05-19T17:01:35.389+05:30 DEBUG 7676 --- [http-nio-8443-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json;q=0.8', given [image/avif, image/webp, image/apng, image/svg+xml, image/*, */*;q=0.8] and supported [application/json, application/*+json]
 2024-05-19T17:01:35.391+05:30 DEBUG 7676 --- [http-nio-8443-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=Sun May 19 17:01:35 IST 2024, status=404, error=Not Found, trace=org.springframework.web. (truncated)...]
 2024-05-19T17:01:35.497+05:30 DEBUG 7676 --- [http-nio-8443-exec-4] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 404
+2024-05-19T17:25:37.064+05:30  INFO 11172 --- [restartedMain] com.example.demo.DemoApplication         : Starting DemoApplication using Java 17.0.4.1 with PID 11172 (C:\Users\admin\git\marketindicators\demo\target\classes started by admin in C:\Users\admin\git\marketindicators\demo)
+2024-05-19T17:25:37.080+05:30  INFO 11172 --- [restartedMain] com.example.demo.DemoApplication         : No active profile set, falling back to 1 default profile: "default"
+2024-05-19T17:25:37.285+05:30  INFO 11172 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-05-19T17:25:37.290+05:30  INFO 11172 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-05-19T17:25:39.441+05:30  INFO 11172 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-05-19T17:25:39.652+05:30  INFO 11172 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 185 ms. Found 6 JPA repository interfaces.
+2024-05-19T17:25:41.796+05:30  INFO 11172 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8443 (http)
+2024-05-19T17:25:41.823+05:30  INFO 11172 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-05-19T17:25:41.824+05:30  INFO 11172 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
+2024-05-19T17:25:42.531+05:30  INFO 11172 --- [restartedMain] org.apache.jasper.servlet.TldScanner     : At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+2024-05-19T17:25:42.546+05:30  INFO 11172 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-05-19T17:25:42.548+05:30  INFO 11172 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 5256 ms
+2024-05-19T17:25:42.985+05:30  INFO 11172 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-05-19T17:25:43.158+05:30  INFO 11172 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2024-05-19T17:25:43.273+05:30  INFO 11172 --- [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-05-19T17:25:43.913+05:30  INFO 11172 --- [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-05-19T17:25:43.989+05:30  INFO 11172 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-05-19T17:25:44.717+05:30  INFO 11172 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4d8d56ff
+2024-05-19T17:25:44.723+05:30  INFO 11172 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-05-19T17:25:47.418+05:30  INFO 11172 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-05-19T17:25:47.660+05:30  INFO 11172 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-05-19T17:25:48.555+05:30  INFO 11172 --- [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-05-19T17:25:50.155+05:30  WARN 11172 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-05-19T17:25:50.466+05:30 DEBUG 11172 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 18 mappings in 'requestMappingHandlerMapping'
+2024-05-19T17:25:50.834+05:30 DEBUG 11172 --- [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /static/**] in 'resourceHandlerMapping'
+2024-05-19T17:25:50.918+05:30 DEBUG 11172 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2024-05-19T17:25:51.003+05:30 DEBUG 11172 --- [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2024-05-19T17:25:51.518+05:30  INFO 11172 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2024-05-19T17:25:51.667+05:30  INFO 11172 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8443 (http) with context path ''
+2024-05-19T17:25:51.703+05:30  INFO 11172 --- [restartedMain] com.example.demo.DemoApplication         : Started DemoApplication in 15.674 seconds (process running for 16.822)
+2024-05-19T17:27:23.141+05:30  INFO 8744 --- [restartedMain] com.example.demo.DemoApplication         : Starting DemoApplication using Java 17.0.4.1 with PID 8744 (C:\Users\admin\git\marketindicators\demo\target\classes started by admin in C:\Users\admin\git\marketindicators\demo)
+2024-05-19T17:27:23.149+05:30  INFO 8744 --- [restartedMain] com.example.demo.DemoApplication         : No active profile set, falling back to 1 default profile: "default"
+2024-05-19T17:27:23.306+05:30  INFO 8744 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-05-19T17:27:23.309+05:30  INFO 8744 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-05-19T17:27:25.125+05:30  INFO 8744 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-05-19T17:27:25.321+05:30  INFO 8744 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 171 ms. Found 6 JPA repository interfaces.
+2024-05-19T17:27:27.033+05:30  INFO 8744 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8443 (http)
+2024-05-19T17:27:27.065+05:30  INFO 8744 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-05-19T17:27:27.066+05:30  INFO 8744 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.20]
+2024-05-19T17:27:27.536+05:30  INFO 8744 --- [restartedMain] org.apache.jasper.servlet.TldScanner     : At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+2024-05-19T17:27:27.552+05:30  INFO 8744 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-05-19T17:27:27.555+05:30  INFO 8744 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4243 ms
+2024-05-19T17:27:27.928+05:30  INFO 8744 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-05-19T17:27:28.082+05:30  INFO 8744 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2024-05-19T17:27:28.188+05:30  INFO 8744 --- [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-05-19T17:27:28.806+05:30  INFO 8744 --- [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-05-19T17:27:28.872+05:30  INFO 8744 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-05-19T17:27:29.499+05:30  INFO 8744 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@370c097b
+2024-05-19T17:27:29.504+05:30  INFO 8744 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-05-19T17:27:32.019+05:30  INFO 8744 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-05-19T17:27:32.124+05:30  INFO 8744 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-05-19T17:27:32.981+05:30  INFO 8744 --- [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-05-19T17:27:34.645+05:30  WARN 8744 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-05-19T17:27:34.893+05:30 DEBUG 8744 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 18 mappings in 'requestMappingHandlerMapping'
+2024-05-19T17:27:35.140+05:30 DEBUG 8744 --- [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /static/**] in 'resourceHandlerMapping'
+2024-05-19T17:27:35.231+05:30 DEBUG 8744 --- [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2024-05-19T17:27:35.309+05:30 DEBUG 8744 --- [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2024-05-19T17:27:35.663+05:30  INFO 8744 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2024-05-19T17:27:35.773+05:30  INFO 8744 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8443 (http) with context path ''
+2024-05-19T17:27:35.802+05:30  INFO 8744 --- [restartedMain] com.example.demo.DemoApplication         : Started DemoApplication in 13.628 seconds (process running for 14.728)
+2024-05-19T17:29:10.979+05:30  INFO 8744 --- [http-nio-8443-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-05-19T17:29:10.981+05:30  INFO 8744 --- [http-nio-8443-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-05-19T17:29:10.985+05:30 DEBUG 8744 --- [http-nio-8443-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2024-05-19T17:29:10.985+05:30 DEBUG 8744 --- [http-nio-8443-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2024-05-19T17:29:10.986+05:30 DEBUG 8744 --- [http-nio-8443-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2024-05-19T17:29:10.990+05:30 DEBUG 8744 --- [http-nio-8443-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@58ee8097
+2024-05-19T17:29:10.991+05:30 DEBUG 8744 --- [http-nio-8443-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@3cdf1de0
+2024-05-19T17:29:10.993+05:30 DEBUG 8744 --- [http-nio-8443-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2024-05-19T17:29:10.994+05:30  INFO 8744 --- [http-nio-8443-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 10 ms
+2024-05-19T17:29:11.023+05:30 DEBUG 8744 --- [http-nio-8443-exec-1] o.s.web.servlet.DispatcherServlet        : GET "/surveillance/upload?type=asm-latest.csv", parameters={masked}
+2024-05-19T17:29:11.054+05:30  WARN 8744 --- [http-nio-8443-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2024-05-19T17:29:11.056+05:30 DEBUG 8744 --- [http-nio-8443-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 405 METHOD_NOT_ALLOWED
+2024-05-19T17:29:11.075+05:30 DEBUG 8744 --- [http-nio-8443-exec-1] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for GET "/error?type=asm-latest.csv", parameters={masked}
+2024-05-19T17:29:11.089+05:30 DEBUG 8744 --- [http-nio-8443-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#errorHtml(HttpServletRequest, HttpServletResponse)
+2024-05-19T17:29:11.179+05:30 DEBUG 8744 --- [http-nio-8443-exec-1] o.s.w.s.v.ContentNegotiatingViewResolver : Selected 'text/html' given [text/html, text/html;q=0.8]
+2024-05-19T17:29:11.213+05:30 DEBUG 8744 --- [http-nio-8443-exec-1] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 405
