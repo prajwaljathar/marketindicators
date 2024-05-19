@@ -6,6 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.model.SurveillanceData;
+import com.example.demo.repository.SurveillanceDataRepository;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
