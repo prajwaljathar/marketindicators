@@ -665,6 +665,8 @@ public class HistoricalDataInRangeController {
 
     @Autowired
     private HistoricalDataInRangeRepository historicalDataInRangeRepository;
+    @Autowired
+    private  CommonMethodsUtils commonMethodsUtils;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -673,7 +675,7 @@ public class HistoricalDataInRangeController {
     public String historicalData(@RequestParam String fromDate, @RequestParam String toDate)
             throws UnsupportedEncodingException, EncryptedDocumentException {
         System.out.println("Fetching instrument data from the database...");
-        Map<String, String> instrumentData = CommonMethodsUtils.readInstrumentDataFromDatabase();
+        Map<String, String> instrumentData = commonMethodsUtils.readInstrumentDataFromDatabase();
         System.out.println("Instrument data fetched successfully.");
 
         LocalDate startDate = LocalDate.parse(fromDate);

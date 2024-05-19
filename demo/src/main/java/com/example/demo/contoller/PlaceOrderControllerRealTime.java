@@ -196,18 +196,27 @@ package com.example.demo.contoller;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.WatchlistEntity;
 import com.example.demo.repository.WatchlistRepository;
 import com.example.demo.serviceimpl.WatchlistServiceImpl;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.upstox.ApiClient;
 import com.upstox.Configuration;
 import com.upstox.auth.OAuth;
@@ -308,22 +317,34 @@ import com.upstox.feeder.listener.OnMarketUpdateListener;
 @RestController
 public class PlaceOrderControllerRealTime {
 
-    private static final String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiI3UUJTOEYiLCJqdGkiOiI2NjNjZjIyNDk4ODdhODM4YmZjODJiZTAiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaXNBY3RpdmUiOnRydWUsInNjb3BlIjpbImludGVyYWN0aXZlIiwiaGlzdG9yaWNhbCJdLCJpYXQiOjE3MTUyNzAxODAsImlzcyI6InVkYXBpLWdhdGV3YXktc2VydmljZSIsImV4cCI6MTcxNTI5MjAwMH0.qcRKyXAsChW8lpKGXSPLDawcFOO8q1r-DPvxuPP6x9A";
+    private static final Logger logger = LogManager.getLogger(PlaceOrderControllerRealTime.class);
+
+    private static final String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiI3UUJTOEYiLCJqdGkiOiI2NjQ4NTE3MTA0YWJkZjIyNWViYzY4NmYiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaWF0IjoxNzE2MDE1NDczLCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE3MTYwNjk2MDB9.ilSy45gB0RPTvqfDew_wwrz3YdMDmroReAK-qnNmU4M";
     private Set<String> executedBuyOrders = new HashSet<>();
     private Map<String, Double> initialLTPMap = new HashMap<>();
-    //private Map<String, Double> buyPriceMap = new HashMap<>();
-    private Map<String, List<Double>> priceMap = new HashMap<>();
+    private Map<String, Double> priceMap = new HashMap<>();
+    private Map<String, Double> closingPrices = new HashMap<>();
+    Double ystdayInstrClsPrice;
+    double tickSize = 0.05;
     
     @Autowired
     private WatchlistRepository watchlistRepository;
 
     @GetMapping("/getplaceorderrealtimedata")
-    public void getPlaceOrderRealTimeUpdate() {
+    public void getPlaceOrderRealTimeUpdate() throws IOException, InterruptedException {
+        logger.info("Fetching place order real-time update");
         List<WatchlistEntity> watchlist = watchlistRepository.findAll();
+        
         Set<String> instrumentKeys = new HashSet<>();
         for (WatchlistEntity watchlistItem : watchlist) {
             instrumentKeys.add(watchlistItem.getInstrumentKey());
+            ystdayInstrClsPrice = watchlistItem.getLastPrice();
+            logger.debug("Instrument: {}, Yesterday's Closing Price: {}", watchlistItem.getInstrumentKey(), ystdayInstrClsPrice);
+            if (ystdayInstrClsPrice != null) {
+                closingPrices.put(watchlistItem.getInstrumentKey(), ystdayInstrClsPrice);
+            }
         }
+
         ApiClient defaultClient = Configuration.getDefaultApiClient();
         OAuth oAuth = (OAuth) defaultClient.getAuthentication("OAUTH2");
         oAuth.setAccessToken(ACCESS_TOKEN);
@@ -336,37 +357,52 @@ public class PlaceOrderControllerRealTime {
                 for (Map.Entry<String, MarketUpdate.Feed> entry : marketUpdate.getFeeds().entrySet()) {
                     String instrumentKey = entry.getKey();
                     MarketUpdate.Feed marketUpdateFeed = entry.getValue();
-                   
-                    
+                    logger.debug("Market Update for Instrument: {}", instrumentKey);
 
                     if (marketUpdateFeed != null && marketUpdateFeed.getFf() != null && marketUpdateFeed.getFf().getMarketFF() != null) {
                         MarketUpdate.LTPC ltpc = marketUpdateFeed.getFf().getMarketFF().getLtpc();
-                        MarketOHLC marketOHLC = marketUpdateFeed.getFf().getMarketFF().getMarketOHLC();
-                        MarketUpdate.OHLC latestOHLC = marketOHLC.getOhlc().get(0);
-                       
-                        double openingPrice = latestOHLC.getOpen();
+						/*
+						 * MarketOHLC marketOHLC =
+						 * marketUpdateFeed.getFf().getMarketFF().getMarketOHLC(); if(marketOHLC !=
+						 * null) { MarketUpdate.OHLC latestOHLC = marketOHLC.getOhlc().get(0);
+						 * logger.debug("Market OHLC: {}", latestOHLC); }
+						 */
                         if (ltpc != null) {
                             Double ltp = ltpc.getLtp();
-                          
-                            if (!executedBuyOrders.contains(instrumentKey) && ltp>openingPrice) {
-                                double buyPrice = ltp + ltp*0.01;                                
-                                placeBuyOrderForInstrument(instrumentKey, buyPrice,ltp,openingPrice);
+                            logger.debug("LTP for {}: {}", instrumentKey, ltp);                          
+                            if (!executedBuyOrders.contains(instrumentKey) && closingPrices.containsKey(instrumentKey) && ltp > (closingPrices.get(instrumentKey)+closingPrices.get(instrumentKey)*0.01) && executedBuyOrders.size() < 5) {
+                            
+                            	double buyPrice = ltp + ltp * 0.0025;
+                                double roundedBuyPrice = Math.round(buyPrice / tickSize) * tickSize;
+                                roundedBuyPrice = Math.round(roundedBuyPrice * 100.0) / 100.0;
+                                logger.info("Contains", executedBuyOrders.contains(instrumentKey));
+                                logger.info("Placing Buy Order for {}: Buy Price: {}", instrumentKey, roundedBuyPrice);
+                                placeBuyOrderForInstrument(instrumentKey, roundedBuyPrice);
                             } else {
-                            	if(executedBuyOrders.contains(instrumentKey)) {
-                            	double sellPrice = 0.0;
-                                sellOrderForInstrument(instrumentKey,sellPrice);
-                            }
+                            	/* This logic is for selling stock inferred from 4-6 range */
+                                if (executedBuyOrders.contains(instrumentKey) && executedBuyOrders.size() < 5) {
+                                    double sellPrice = 0;
+                                    logger.info("Placing Sell Order for {}: Sell Price: {}", instrumentKey, sellPrice);
+                                    sellOrderForInstrument(instrumentKey, sellPrice);
+                                }
                             }
                         }
-                        
-                        double immediateSellForLtp=priceMap.get(instrumentKey).get(0);
-                        double immediateSellForOpening=priceMap.get(instrumentKey).get(1);
-                        if(immediateSellForLtp<immediateSellForOpening && executedBuyOrders.contains(instrumentKey)) {
-                        		Double ltp = ltpc.getLtp();
-                        		if(immediateSellForLtp*0.005<immediateSellForOpening) {
-                        	 double immediateSellPrice = ltp - ltp*0.01;
-                        	sellOrderForInstrument(instrumentKey,immediateSellPrice);
-                        }
+						/* This logic is for selling stock immediately */
+                        if (!priceMap.isEmpty()) {
+                            logger.debug("Price Map: {}", priceMap);
+                            if (priceMap.containsKey(instrumentKey)) {
+                                double buyPriceForImmediateSell = priceMap.get(instrumentKey);
+                                Double ltp = ltpc.getLtp();
+                                if (ltp < buyPriceForImmediateSell && executedBuyOrders.contains(instrumentKey) && executedBuyOrders.size() < 5) {
+                                    if (ltp < buyPriceForImmediateSell * 0.95) {
+                                        double immediateSellPrice = ltp - ltp * 0.01;
+                                        double  roundedSellPrice = Math.round(immediateSellPrice / tickSize) * tickSize;
+                                        roundedSellPrice = Math.round(roundedSellPrice * 100.0) / 100.0;
+                                        logger.info("Immediate Sell for {}: Immediate Sell Price: {}", instrumentKey, roundedSellPrice);
+                                        sellOrderForInstrument(instrumentKey, roundedSellPrice);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -374,13 +410,14 @@ public class PlaceOrderControllerRealTime {
         });
 
         marketDataStreamer.connect();
+        logger.info("Market data streamer connected");
     }
 
-    private void placeBuyOrderForInstrument(String instrumentKey, Double buyPrice,Double ltp,double openingPrice) {
+    private void placeBuyOrderForInstrument(String instrumentKey, Double buyPrice) {
         try {
-            String url = "https://api.upstox.com/v2/order/place";
+            String urlPlcOrd = "https://api.upstox.com/v2/order/place";
             String token = "Bearer " + ACCESS_TOKEN;
-            String requestBody = "{\"quantity\": 1," + "\"product\": \"D\"," + "\"validity\": \"DAY\"," +
+            String requestBody = "{\"quantity\": 2," + "\"product\": \"D\"," + "\"validity\": \"DAY\"," +
                     "\"price\": " + buyPrice + "," + "\"tag\": \"string\"," +
                     "\"instrument_token\": \"" + instrumentKey + "\"," +
                     "\"order_type\": \"LIMIT\"," + "\"transaction_type\": \"BUY\"," +
@@ -388,40 +425,50 @@ public class PlaceOrderControllerRealTime {
                     "\"is_amo\": false" + "}";
 
             HttpClient httpClient = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url))
+            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(urlPlcOrd))
                     .header("Content-Type", "application/json").header("Accept", "application/json")
                     .header("Authorization", token).POST(HttpRequest.BodyPublishers.ofString(requestBody)).build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                executedBuyOrders.add(instrumentKey);
-                priceMap.put(instrumentKey, Arrays.asList(ltp, openingPrice));
-                System.out.println("Buy Order placed successfully");
+                JSONObject jsonResponse = new JSONObject(response.body());
+                String status = jsonResponse.optString("status");
+
+                if ("success".equals(status)) {
+                    executedBuyOrders.add(instrumentKey);
+                    priceMap.put(instrumentKey, buyPrice);
+                    logger.info("Buy Order placed successfully for {}", instrumentKey,buyPrice);
+                } else {
+                    logger.error("Failed to place Buy Order: {}", response.body());
+                }
             } else {
-                System.out.println("Failed to place Buy Order: " + response.body());
+                logger.error("Failed to place Buy Order with status code: {}", response.statusCode());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception while placing Buy Order for {}: ", instrumentKey, e);
         }
     }
 
-    private void sellOrderForInstrument(String instrumentKey,Double sellPrice ) {
+    private void sellOrderForInstrument(String instrumentKey, Double roundedSellPrice) {
         try {
-            Optional<WatchlistEntity> optionalEntity = watchlistRepository.findById(instrumentKey);
+            Optional<WatchlistEntity> optionalEntity = watchlistRepository.findByInstrumentKey(instrumentKey);
             if (optionalEntity.isPresent()) {
                 WatchlistEntity watchlistEntity = optionalEntity.get();
                 Double lastPrice = watchlistEntity.getLastPrice();
-                if(sellPrice==0.0) {
-                	  sellPrice=lastPrice + 0.03*lastPrice;
+                logger.debug("Last Price for {}: {}", instrumentKey, lastPrice);
+                if (roundedSellPrice == 0) {
+                	roundedSellPrice = lastPrice + 0.03 * lastPrice;
+                    roundedSellPrice = Math.round(roundedSellPrice / tickSize) * tickSize;
+                    roundedSellPrice = Math.round(roundedSellPrice * 100.0) / 100.0;
                 }
-               
+
                 String url = "https://api.upstox.com/v2/order/place";
                 String token = "Bearer " + ACCESS_TOKEN;
-                String requestBody = "{\"instrument_token\": \"" + instrumentKey + "\"," + "\"quantity\": 1," +
+                String requestBody = "{\"instrument_token\": \"" + instrumentKey + "\"," + "\"quantity\": 2," +
                         "\"product\": \"D\"," + "\"order_type\": \"LIMIT\"," +
-                        "\"transaction_type\": \"SELL\"," + "\"price\": " + sellPrice + "," +
-                        "\"trigger_price\": " + sellPrice + "," + "\"validity\": \"DAY\"," +
+                        "\"transaction_type\": \"SELL\"," + "\"price\": " + roundedSellPrice + "," +
+                        "\"trigger_price\": " + roundedSellPrice + "," + "\"validity\": \"DAY\"," +
                         "\"disclosed_quantity\": 0," + "\"is_amo\": false" + "}";
 
                 HttpClient httpClient = HttpClient.newHttpClient();
@@ -432,15 +479,25 @@ public class PlaceOrderControllerRealTime {
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
                 if (response.statusCode() == 200) {
-                    executedBuyOrders.remove(instrumentKey);
-                    priceMap.remove(instrumentKey);
-                    System.out.println("Sell Order placed successfully");
+                    JSONObject jsonResponse = new JSONObject(response.body());
+                    String status = jsonResponse.optString("status");
+
+                    if ("success".equals(status)) {
+                      //  executedBuyOrders.remove(instrumentKey);
+                      //  priceMap.remove(instrumentKey);
+                        logger.info("Sell Order placed successfully for {}", instrumentKey);
+                    } else {
+                        logger.error("Sell Order placement failed: {}", response.body());
+                    }
+                } else {
+                    logger.error("Sell Order placement failed with status code: {}", response.statusCode());
                 }
             } else {
-                System.out.println("WatchlistEntity not found for instrumentKey: " + instrumentKey);
+                logger.warn("WatchlistEntity not found for instrumentKey: {}", instrumentKey);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception while placing Sell Order for {}: ", instrumentKey, e);
         }
     }
 }
+

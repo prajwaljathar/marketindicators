@@ -10,8 +10,8 @@ import com.example.demo.model.WatchlistEntity;
 @Repository
 public interface WatchlistRepository extends JpaRepository<WatchlistEntity, String> {
 
-	Optional<WatchlistEntity> findById(String instrumentKey);
-
+	//Optional<WatchlistEntity> findById(String instrumentKey);
+	Optional<WatchlistEntity> findByInstrumentKey(String instrumentKey);
 }
 
 

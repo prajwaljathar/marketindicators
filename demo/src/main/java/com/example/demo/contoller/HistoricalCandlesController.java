@@ -113,7 +113,7 @@ public class HistoricalCandlesController {
 
     private String getCandleDataFromAPI(String instrumentKey, String formattedStartDate, String formattedEndDate) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "https://api.upstox.com/v2/historical-candle/" + instrumentKey + "/1minute/"
+        String url = "https://api.upstox.com/v2/historical-candle/" + instrumentKey + "/day/"
                 + formattedEndDate + "/" + formattedStartDate;
         return restTemplate.getForObject(url, String.class);
     }
@@ -130,7 +130,7 @@ public class HistoricalCandlesController {
 
             HistoricalCandles historicalCandle = new HistoricalCandles();
             historicalCandle.setInstrumentKey(instrumentKey);
-            historicalCandle.setIntervalType("1minute");
+            historicalCandle.setIntervalType("day");
            // Parse the timestamp string into an OffsetDateTime object
             OffsetDateTime offsetDateTime = OffsetDateTime.parse(timestamp);
             // Convert OffsetDateTime to LocalDateTime
