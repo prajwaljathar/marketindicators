@@ -505,7 +505,7 @@ public class PlaceOrderControllerRealTime {
 
 	private static final Logger logger = LogManager.getLogger(PlaceOrderControllerRealTime.class);
 
-	private static final String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiI3UUJTOEYiLCJqdGkiOiI2NjQ4NTE3MTA0YWJkZjIyNWViYzY4NmYiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaWF0IjoxNzE2MDE1NDczLCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE3MTYwNjk2MDB9.ilSy45gB0RPTvqfDew_wwrz3YdMDmroReAK-qnNmU4M";
+	private static final String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiI3NEFKRkwiLCJqdGkiOiI2NjUwMDQyMGM2Y2ExNTM5YTZiZTZkMmYiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaWF0IjoxNzE2NTE5OTY4LCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE3MTY1ODgwMDB9.0KYhNiVqVhFHZSiyLWOYd7cFk9vEgaoPvBI1Rvppq7c";
 	private Set<String> executedBuyOrders = new HashSet<>();
 	private Map<String, Double> initialLTPMap = new HashMap<>();
 	private Map<String, Double> priceMap = new HashMap<>();

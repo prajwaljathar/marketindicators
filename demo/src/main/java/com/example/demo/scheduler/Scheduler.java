@@ -14,9 +14,10 @@ public class Scheduler {
     @Autowired
     private PlaceOrderControllerRealTime placeOrderControllerRealTime;
 
-    //@Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Kolkata")  
+      
     //@Scheduled(cron = "0 15 9 * * ?", zone = "Asia/Kolkata")
-    @Scheduled(cron = "0 30 11 * * ?", zone = "Asia/Kolkata")
+    //@Scheduled(cron = "0 30 11 * * ?", zone = "Asia/Kolkata")
+    @Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Kolkata")
     public void schedulePlaceOrderRealTimeUpdate() {
         try {
             placeOrderControllerRealTime.getPlaceOrderRealTimeUpdate();

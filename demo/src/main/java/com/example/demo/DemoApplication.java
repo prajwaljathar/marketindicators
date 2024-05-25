@@ -29,6 +29,8 @@ import com.example.demo.repository.InstrumentRepository;
 
 import com.example.demo.serviceimpl.InstrumentServiceImpl;
 import com.example.demo.service.ExcelDataService;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 //import com.example.demo.watchlist.Watchlist;
 
 /*
@@ -108,9 +110,13 @@ import com.example.demo.service.ExcelDataService;
 @SpringBootApplication
 @EnableScheduling
 public class DemoApplication {
-
+	private static final Logger logger = LogManager.getLogger(DemoApplication.class);
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
+        logger.debug("This is a debug message");
+        logger.info("This is an info message");
+        logger.warn("This is a warn message");
+        logger.error("This is an error message");
     }
 
     @Autowired

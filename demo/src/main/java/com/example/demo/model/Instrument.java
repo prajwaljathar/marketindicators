@@ -11,7 +11,7 @@ public class Instrument {
 
     private String instrumentKey;
     private String instrument_short_name;
-    private String instument_name;
+    private String instrument_name;
     private Double lastPrice;
     private Integer lotSize;
     private String instrumentType;
@@ -35,10 +35,10 @@ public class Instrument {
 		this.instrument_short_name = instrument_short_name;
 	}
 	public String getInstrumentName() {
-		return instument_name;
+		return instrument_name;
 	}
-	public void setInstrumentName(String instument_name) {
-		this.instument_name = instument_name;
+	public void setInstrumentName(String instrument_name) {
+		this.instrument_name = instrument_name;
 	}
 	public Double getLastPrice() {
 		return lastPrice;

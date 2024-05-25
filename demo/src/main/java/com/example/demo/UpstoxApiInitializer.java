@@ -187,7 +187,7 @@ public class UpstoxApiInitializer {
 
 		String redirectUrl = "redirect:" + "https://api.upstox.com/v2/login/authorization/dialog" + "?client_id="
 				+ "39a83b5d-3396-4947-82cb-3e5f8465e171" + "&redirect_uri="
-				+ "https://f872-103-205-173-26.ngrok-free.app" + "&response_type=" + "code";
+				+ "https://f72a-103-205-173-26.ngrok-free.app" + "&response_type=" + "code";
 
 		return redirectUrl;
 	}
@@ -198,9 +198,9 @@ public class UpstoxApiInitializer {
 		kong.unirest.HttpResponse<String> response = Unirest.post("https://api.upstox.com/v2/login/authorization/token")
 				.header("Content-Type", "application/x-www-form-urlencoded").header("Accept", "application/json")
 				.field("grant_type", "authorization_code")
-				.field("redirect_uri", "https://f872-103-205-173-26.ngrok-free.app")
+				.field("redirect_uri", "https://f72a-103-205-173-26.ngrok-free.app")
 				.field("client_secret", "aftixkz9rv").field("client_id", "39a83b5d-3396-4947-82cb-3e5f8465e171")
-				.field("code", "gAqq_A").asString();
+				.field("code", "Lt6CNh").asString();
 
 		System.out.println("Response Body " + response.getBody());
 
