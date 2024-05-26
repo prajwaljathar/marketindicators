@@ -93,5 +93,3 @@ AND instrument_name IN (
 #Transition query 20->10->5
 SELECT count(*),historical_instrument_key FROM marketindicator.watchlist_entity where  historical_percentage_change>8 && historical_percentage_change>18  group by historical_instrument_key;
 ---------------------------------------------------------------------------------------------------------------------
-query
-result by prajwal2
