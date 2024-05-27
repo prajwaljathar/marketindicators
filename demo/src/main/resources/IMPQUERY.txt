@@ -38,7 +38,7 @@ SELECT
     date_range.date AS date,
     instrument_details.instrument_key,
     IFNULL(((candles.close - previous_candle.close) / previous_candle.close) * 100, 0) AS percentage_change,
-    instrument_details.instument_name AS instrument_name
+    instrument_details.instrument_name AS instrument_name
 FROM
     (
         SELECT
@@ -54,7 +54,7 @@ CROSS JOIN marketindicator.instrument_details AS instrument_details
 LEFT JOIN marketindicator.historical_candles AS candles ON candles.instrument_key = instrument_details.instrument_key AND DATE(candles.candle_time) = date_range.date
 LEFT JOIN marketindicator.historical_candles AS previous_candle ON previous_candle.instrument_key = candles.instrument_key AND DATE(previous_candle.candle_time) = DATE_SUB(date_range.date, INTERVAL 1 DAY)
 WHERE
-    date_range.date BETWEEN '2024-05-10' AND '2024-05-15'
+    date_range.date BETWEEN '2024-05-24' AND '2024-05-26'
 ORDER BY
     instrument_details.instrument_key, date_range.date;
 

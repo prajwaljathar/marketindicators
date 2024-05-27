@@ -519,7 +519,8 @@ public class PlaceOrderControllerRealTime {
 	@GetMapping("/getplaceorderrealtimedata")
 	public void getPlaceOrderRealTimeUpdate() throws IOException, InterruptedException {
 		logger.info("Starting the process to fetch place order real-time update");
-		List<WatchlistEntity> watchlist = watchlistRepository.findAll();
+		//List<WatchlistEntity> watchlist = watchlistRepository.findAll();
+		List<WatchlistEntity> watchlist =watchlistRepository.findByTradeYes5OrYes20();
 		logger.debug("Fetched Watchlist: {}", watchlist);
 		Set<String> instrumentKeys = new HashSet<>();
 		for (WatchlistEntity watchlistItem : watchlist) {

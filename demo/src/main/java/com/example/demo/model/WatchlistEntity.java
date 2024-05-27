@@ -22,12 +22,17 @@ public class WatchlistEntity {
     private Integer lotSize;
     private String instrumentType;
     private String exchange;
+    
 
     // HistoricalData fields
     private String historicalInstrumentKey;
     private LocalDate historicalDate;
     private Double historicalPercentageChange;
     private String historicalInstrumentName;
+    
+    
+    //Other
+    private String trade;
     
 	public Long getId() {
 		return id;
@@ -100,6 +105,12 @@ public class WatchlistEntity {
 	}
 	public void setHistoricalInstrumentName(String historicalInstrumentName) {
 		this.historicalInstrumentName = historicalInstrumentName;
+	}
+	public String getTrade() {
+		return trade;
+	}
+	public void setTrade(String trade) {
+		this.trade = trade;
 	}
 
     // Constructors, getters, and setters
