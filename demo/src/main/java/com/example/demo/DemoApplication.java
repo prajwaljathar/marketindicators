@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Instrument;
 import com.example.demo.repository.InstrumentRepository;
@@ -117,8 +119,6 @@ public class DemoApplication {
     @Autowired
     private ExcelDataService excelDataService;
 
-
-	
 //	@PostConstruct public void init() { excelDataService.loadDataFromExcel(); }
 
 }
