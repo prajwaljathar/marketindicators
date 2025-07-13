@@ -33,9 +33,9 @@ import com.upstox.feeder.listener.OnMarketUpdateListener;
 @RestController
 public class PlaceOrderCircuit {
 
-	private static final Logger logger = LogManager.getLogger(PlaceOrderControllerRealTime.class);
+	private static final Logger logger = LogManager.getLogger(PlaceOrderCircuit.class);
 
-	private static final String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiI3NEFKRkwiLCJqdGkiOiI2NjU1NGMyM2RhN2VkYTA0ZjZjZGRlYTkiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaWF0IjoxNzE2ODY2MDgzLCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE3MTY5MzM2MDB9.fuIrrGcUkC1SQfenXY6Yun4irmS8QazVmCQrAMsgP-U";
+	private static final String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJrZXlfaWQiOiJza192MS4wIiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiI3UUJTOEYiLCJqdGkiOiI2Njk1ZTlhYzVhNjcwOTYzZWMwYThkNTAiLCJpc011bHRpQ2xpZW50IjpmYWxzZSwiaWF0IjoxNzIxMTAwNzE2LCJpc3MiOiJ1ZGFwaS1nYXRld2F5LXNlcnZpY2UiLCJleHAiOjE3MjExNjcyMDB9.3GlH_g3jsQrm67cPpOSZnoIAjL1CkKE9ZkYR18iBW-g";
 	private Set<String> executedBuyOrders = new HashSet<>();
 	private Map<String, Double> initialLTPMap = new HashMap<>();
 	private Map<String, Double> priceMap = new HashMap<>();
@@ -49,8 +49,8 @@ public class PlaceOrderCircuit {
 	@GetMapping("/getplaceordercircuit")
 	public void getPlaceOrderRealTimeUpdate() throws IOException, InterruptedException {
 		logger.info("Starting the process to fetch place order real-time update");
-		//List<WatchlistEntity> watchlist = watchlistRepository.findAll();
-		List<WatchlistEntity> watchlist =watchlistRepository.findByTradeYes5OrYes20();
+		List<WatchlistEntity> watchlist = watchlistRepository.findAll();
+		//List<WatchlistEntity> watchlist =watchlistRepository.findByTradeYes5OrYes20();
 		logger.debug("Fetched Watchlist: {}", watchlist);
 		Set<String> instrumentKeys = new HashSet<>();
 		for (WatchlistEntity watchlistItem : watchlist) {
@@ -88,9 +88,9 @@ public class PlaceOrderCircuit {
 							if (!executedBuyOrders.contains(instrumentKey) && closingPrices.containsKey(instrumentKey)
 									&& ltp > (closingPrices.get(instrumentKey)
 											+ closingPrices.get(instrumentKey) * 0.01)
-									&& executedBuyOrders.size() < 15) {
+									&& executedBuyOrders.size() < 1) {
 
-								double buyPrice = closingPrices.get(instrumentKey) + closingPrices.get(instrumentKey) * 0.04;
+								double buyPrice = closingPrices.get(instrumentKey) + closingPrices.get(instrumentKey) * 0.12;
 								double roundedBuyPrice = Math.round(buyPrice / tickSize) * tickSize;
 								roundedBuyPrice = Math.round(roundedBuyPrice * 100.0) / 100.0;
 								logger.info("Ready to place Buy Order for {}: Buy Price: {}", instrumentKey,
@@ -146,7 +146,7 @@ public class PlaceOrderCircuit {
 			logger.debug("Preparing to place Buy Order for instrument: {}, Buy Price: {}", instrumentKey, buyPrice);
 			String urlPlcOrd = "https://api.upstox.com/v2/order/place";
 			String token = "Bearer " + ACCESS_TOKEN;
-			String requestBody = "{\"quantity\": 4," + "\"product\": \"D\"," + "\"validity\": \"DAY\"," + "\"price\": "
+			String requestBody = "{\"quantity\": 1," + "\"product\": \"D\"," + "\"validity\": \"DAY\"," + "\"price\": "
 					+ buyPrice + "," + "\"tag\": \"string\"," + "\"instrument_token\": \"" + instrumentKey + "\","
 					+ "\"order_type\": \"LIMIT\"," + "\"transaction_type\": \"BUY\"," + "\"disclosed_quantity\": 0,"
 					+ "\"trigger_price\": " + buyPrice + "," + "\"is_amo\": false" + "}";

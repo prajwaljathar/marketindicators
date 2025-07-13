@@ -77,6 +77,15 @@ public interface HistoricalCandlesRepository extends JpaRepository<HistoricalCan
     Optional<HistoricalCandles> findByInstrumentKeyAndCandleTime(
             @Param("instrumentKey") String instrumentKey,
             @Param("candleTime") LocalDateTime candleTime);
+    
+    @Query("SELECT hc FROM HistoricalCandles hc " +
+    	       "WHERE hc.instrumentKey = :instrumentKey " +
+    	       "AND FUNCTION('DATE', hc.candleTime) = FUNCTION('DATE', :candleTime) " +
+    	       "AND hc.intervalType = :intervalType")
+    	Optional<HistoricalCandles> findByInstrumentKeyAndCandleTimeAndIntervalType(
+    	        @Param("instrumentKey") String instrumentKey,
+    	        @Param("candleTime") LocalDateTime candleTime,
+    	        @Param("intervalType") String intervalType);
 
     @Query("SELECT h FROM HistoricalCandles h WHERE DATE(h.candleTime) >= :startDate AND DATE(h.candleTime) <= :endDate ORDER BY h.candleTime DESC")
     List<HistoricalCandles> findByCandleTimeBetweenOrderByCandleTimeDesc(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);

@@ -93,3 +93,229 @@ AND instrument_name IN (
 #Transition query 20->10->5
 SELECT count(*),historical_instrument_key FROM marketindicator.watchlist_entity where  historical_percentage_change>8 && historical_percentage_change>18  group by historical_instrument_key;
 ---------------------------------------------------------------------------------------------------------------------
+#Transition query 10->5 near trade date
+SELECT COUNT(*) AS count, instrument_key, date
+FROM marketindicator.historical_data_in_range_entity 
+WHERE percentage_change > 10 
+  AND date BETWEEN '2024-07-10' AND '2024-07-12'
+GROUP BY instrument_key
+HAVING COUNT(*) > 1;
+--------------------------------------------------------------------------------------------------------------------
+market to watchlist (insertinto)
+INSERT INTO marketindicator.watchlist_entity (
+    historical_date,
+    historical_instrument_key,
+    instrument_key,
+    instrument_short_name,
+    last_price,
+    lower_circuit_limit,
+    upper_circuit_limit
+)
+SELECT
+    STR_TO_DATE(timestamp, '%Y-%m-%d') AS historical_date,
+    instrument_token AS historical_instrument_key,
+    instrument_token AS instrument_key,
+    symbol AS instrument_short_name,
+    last_price,
+    lower_circuit_limit,
+    upper_circuit_limit
+FROM marketindicator.market_data
+WHERE instrument_token IN ('NSE_EQ|INE0P4T01013', 'NSE_EQ|INE495S01016', 'NSE_EQ|INE848A01014');
+----------------------------------------------------------------------------------------------------------------------------
+Delete Duplicate Records
+DELETE FROM marketindicator.market_data
+WHERE id NOT IN (
+  SELECT id
+  FROM (
+    SELECT MIN(id) as id
+    FROM marketindicator.market_data
+    GROUP BY instrument_token
+  ) as temp_table
+);
+
+--------------------------------------------------------------------------------------------------------
+percentage change per minute 
+WITH start_of_day AS (
+    SELECT
+        instrument_key,
+        MIN(candle_time) AS start_time,
+        MIN(open) AS start_price
+    FROM marketindicator.historical_candles
+    WHERE DATE(candle_time) = '2024-07-19'
+    AND instrument_key IN (
+        'NSE_EQ|INE00LM01029',
+        'NSE_EQ|INE020B07HT0',
+        'NSE_EQ|INE04AK01028',
+        'NSE_EQ|INE05CZ01011',
+        'NSE_EQ|INE108V01019',
+        'NSE_EQ|INE123B01028',
+        'NSE_EQ|INE134B01017',
+        'NSE_EQ|INE137C01018',
+        'NSE_EQ|INE153A01019',
+        'NSE_EQ|INE268B01013',
+        'NSE_EQ|INE306L01010',
+        'NSE_EQ|INE321D01016',
+        'NSE_EQ|INE377E01016',
+        'NSE_EQ|INE517B01013',
+        'NSE_EQ|INE599M01018',
+        'NSE_EQ|INE610B01024',
+        'NSE_EQ|INE709Z01015',
+        'NSE_EQ|INE784W01015',
+        'NSE_EQ|INE809I01019',
+        'NSE_EQ|INE864B01027',
+        'NSE_EQ|INE865C01022',
+        'NSE_EQ|INE976T01013',
+        'NSE_EQ|INF179KC1EZ4'
+    )
+    GROUP BY instrument_key
+),
+minute_data AS (
+    SELECT
+        hc.instrument_key,
+        DATE(candle_time) AS date,
+        TIME(candle_time) AS time,
+        open,
+        ((close - s.start_price) / s.start_price) * 100 AS percentage_change
+    FROM marketindicator.historical_candles hc
+    JOIN start_of_day s ON hc.instrument_key = s.instrument_key
+    AND DATE(hc.candle_time) = '2024-07-19'
+    WHERE hc.interval_type = '1minute'
+)
+SELECT
+    instrument_key,
+    date,
+    time,
+    percentage_change
+FROM minute_data
+ORDER BY instrument_key, time;
+------------------------------------------------------------------------------------------------------------------
+profit and loss query
+#drop table temp_investment_summary;
+CREATE TEMPORARY TABLE temp_investment_summary AS
+WITH start_of_day AS (
+    SELECT
+        instrument_key,
+        MIN(candle_time) AS start_time,
+        MIN(open) AS start_price
+    FROM marketindicator.historical_candles
+    WHERE DATE(candle_time) = '2024-07-19'
+    AND instrument_key IN (
+        'NSE_EQ|INE00LM01029',
+        'NSE_EQ|INE020B07HT0',
+        'NSE_EQ|INE04AK01028',
+        'NSE_EQ|INE05CZ01011',                                  
+        'NSE_EQ|INE108V01019',
+        'NSE_EQ|INE123B01028',
+        'NSE_EQ|INE134B01017',
+        'NSE_EQ|INE137C01018',
+        'NSE_EQ|INE153A01019',
+        'NSE_EQ|INE268B01013',
+        'NSE_EQ|INE306L01010',
+        'NSE_EQ|INE321D01016',
+        'NSE_EQ|INE377E01016',
+        'NSE_EQ|INE517B01013',
+        'NSE_EQ|INE599M01018',
+        'NSE_EQ|INE610B01024',
+        'NSE_EQ|INE709Z01015',
+        'NSE_EQ|INE784W01015',
+        'NSE_EQ|INE809I01019',
+        'NSE_EQ|INE864B01027',
+        'NSE_EQ|INE865C01022',
+        'NSE_EQ|INE976T01013',
+        'NSE_EQ|INF179KC1EZ4'
+    )
+    GROUP BY instrument_key
+),
+minute_data AS (
+    SELECT
+        hc.instrument_key,
+        DATE(candle_time) AS date,
+        TIME(candle_time) AS time,
+        hc.open,
+        hc.close,
+        hc.volume,
+        ((hc.close - s.start_price) / s.start_price) * 100 AS percentage_change
+    FROM marketindicator.historical_candles hc
+    JOIN start_of_day s ON hc.instrument_key = s.instrument_key
+    AND DATE(hc.candle_time) = '2024-07-19'
+    WHERE hc.interval_type = '1minute'
+),
+reaching_4 AS (
+    SELECT
+        instrument_key,
+        MIN(time) AS time_when_4_reached,
+        MIN(close) AS price_when_4_reached
+    FROM minute_data
+    WHERE percentage_change >= 4
+    GROUP BY instrument_key
+),
+investment_value AS (
+    SELECT
+        md.instrument_key,
+        md.date,
+        md.time,
+        md.percentage_change,
+        md.volume,
+        r4.price_when_4_reached AS buy_price,
+        CASE 
+            WHEN md.time >= r4.time_when_4_reached THEN
+                (100000 / r4.price_when_4_reached) * md.close
+            ELSE NULL
+        END AS investment_value
+    FROM minute_data md
+    JOIN reaching_4 r4
+    ON md.instrument_key = r4.instrument_key
+    AND md.time >= r4.time_when_4_reached
+),
+end_of_day AS (
+    SELECT
+        md.instrument_key,
+        MAX(md.time) AS end_time,
+        MAX(md.close) AS end_price
+    FROM minute_data md
+    GROUP BY md.instrument_key
+),
+final_result AS (
+    SELECT
+        iv.instrument_key,
+        iv.date,
+        iv.time,
+        iv.percentage_change,
+        iv.volume,
+        iv.buy_price,
+        iv.investment_value,
+        CASE
+            WHEN iv.time = eod.end_time THEN
+                iv.investment_value - 100000 -- subtracting initial investment of 100000
+            ELSE NULL
+        END AS profit_or_loss
+    FROM investment_value iv
+    JOIN end_of_day eod
+    ON iv.instrument_key = eod.instrument_key
+)
+SELECT
+    instrument_key,
+    date,
+    time,
+    percentage_change,
+    volume,
+    buy_price,
+    investment_value,
+    profit_or_loss
+FROM final_result
+ORDER BY instrument_key, time;
+---------------------------------------------------------------------------------------------------------------------------------------------
+0.5-122,1-366,2-731,5-1827
+----------------------------------------------------------------------------------------------------------------------------------------------
+Check in 0.5-122,1-366,2-731,5-1827 (present in) 
+SELECT
+    a.instrument_name,a.percentage_change as a,b.instrument_name,b.percentage_change,a.date_difference as a,b.date_difference
+FROM
+    marketindicator.historical_candles a
+        JOIN
+    marketindicator.historical_candles b ON a.instrument_name = b.instrument_name
+WHERE
+    a.date_difference = 122
+        AND b.date_difference = 366
+        AND a.percentage_change > 300 and   b.percentage_change > 300;
+ -----------------------------------------------------------------

@@ -295,7 +295,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 //    }
 //}
 
-
 @RestController
 public class HistoricalCandlesController {
 
@@ -397,7 +396,7 @@ public class HistoricalCandlesController {
 
     private String getCandleDataFromAPI(String instrumentKey, String formattedStartDate, String formattedEndDate) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "https://api.upstox.com/v2/historical-candle/" + instrumentKey + "/day/"
+        String url = "https://api.upstox.com/v2/historical-candle/" + instrumentKey + "/1minute/"
                 + formattedEndDate + "/" + formattedStartDate;
         return restTemplate.getForObject(url, String.class);
     }
@@ -405,20 +404,21 @@ public class HistoricalCandlesController {
     private HistoricalCandles createCandleObject(String instrumentKey, JSONArray candle) {
         try {
             String timestamp = candle.getString(0);
-            BigDecimal open = candle.getBigDecimal(1);
-            BigDecimal high = candle.getBigDecimal(2);
-            BigDecimal low = candle.getBigDecimal(3);
-            BigDecimal close = candle.getBigDecimal(4);
+            BigDecimal open = BigDecimal.valueOf(candle.getDouble(1));
+            BigDecimal high = BigDecimal.valueOf(candle.getDouble(2));
+            BigDecimal low = BigDecimal.valueOf(candle.getDouble(3));
+            BigDecimal close = BigDecimal.valueOf(candle.getDouble(4));
             int volume = candle.getInt(5);
             int openInterest = candle.getInt(6);
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
             LocalDateTime localDateTime = LocalDateTime.parse(timestamp, formatter);
 
-            if (historicalCandlesRepository.findByInstrumentKeyAndCandleTime(instrumentKey, localDateTime).isEmpty()) {
+            if (historicalCandlesRepository.findByInstrumentKeyAndCandleTimeAndIntervalType(
+                    instrumentKey, localDateTime, "1minute").isEmpty()) {
                 HistoricalCandles historicalCandle = new HistoricalCandles();
                 historicalCandle.setInstrumentKey(instrumentKey);
-                historicalCandle.setIntervalType("day");
+                historicalCandle.setIntervalType("1minute");
                 historicalCandle.setCandleTime(localDateTime);
                 historicalCandle.setOpen(open);
                 historicalCandle.setHigh(high);

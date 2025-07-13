@@ -4,15 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.example.demo.contoller.PlaceOrderControllerRealTime;
+import com.example.demo.contoller.PlaceOrderCircuit;
+
 
 import java.io.IOException;
 
 @Component
 public class Scheduler {
 
+//    @Autowired
+//    private PlaceOrderControllerRealTime placeOrderControllerRealTime;
     @Autowired
-    private PlaceOrderControllerRealTime placeOrderControllerRealTime;
+    private PlaceOrderCircuit placeOrderCircuit;
 
       
     //@Scheduled(cron = "0 15 9 * * ?", zone = "Asia/Kolkata")
@@ -20,7 +23,7 @@ public class Scheduler {
     @Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Kolkata")
     public void schedulePlaceOrderRealTimeUpdate() {
         try {
-            placeOrderControllerRealTime.getPlaceOrderRealTimeUpdate();
+        	placeOrderCircuit.getPlaceOrderRealTimeUpdate();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

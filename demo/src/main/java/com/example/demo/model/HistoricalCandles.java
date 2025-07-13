@@ -1,5 +1,6 @@
 package com.example.demo.model;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
@@ -19,6 +20,20 @@ public class HistoricalCandles {
     private BigDecimal close;
     private Integer volume;
     private int openInterest;
+    private long dateDifference; 
+    
+
+	public String getIntervalType() {
+		return intervalType;
+	}
+	public void setVolume(Integer volume) {
+		this.volume = volume;
+	}
+	private String instrumentName;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private BigDecimal percentageChange;
+    
 	public Long getId() {
 		return id;
 	}
@@ -80,5 +95,36 @@ public class HistoricalCandles {
 		this.openInterest = openInterest;
 	}
 
+    public String getInstrumentName() {
+		return instrumentName;
+	}
+	public void setInstrumentName(String instrumentName) {
+		this.instrumentName = instrumentName;
+	}
+	public LocalDate getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(LocalDate startDate) {
+		this.startDate = startDate;
+	}
+	public LocalDate getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(LocalDate endDate) {
+		this.endDate = endDate;
+	}
+	public BigDecimal getPercentageChange() {
+		return percentageChange;
+	}
+	public void setPercentageChange(BigDecimal percentageChange) {
+		this.percentageChange = percentageChange;
+	}
+	 public long getDateDifference() {
+		return dateDifference;
+	}
+	public void setDateDifference(long dateDifference) {
+		this.dateDifference = dateDifference;
+	}
+	
     // Constructors, getters, and setters
 }

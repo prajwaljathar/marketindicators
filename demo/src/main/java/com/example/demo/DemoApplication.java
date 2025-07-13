@@ -8,8 +8,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -22,10 +24,13 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.contoller.RealtimeIndianMarketAlgorithm;
 import com.example.demo.model.Instrument;
 import com.example.demo.repository.InstrumentRepository;
 
@@ -112,15 +117,33 @@ import org.apache.logging.log4j.LogManager;
 @SpringBootApplication
 @EnableScheduling
 public class DemoApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
-    }
+	
+	 @Autowired
+	    private InstrumentRepository instrumentRepository;
 
-    @Autowired
-    private ExcelDataService excelDataService;
+	    @Autowired
+	    private RealtimeIndianMarketAlgorithm algorithm;
 
-//	@PostConstruct public void init() { excelDataService.loadDataFromExcel(); }
+	    public static void main(String[] args) {
+	        SpringApplication.run(DemoApplication.class, args);
+	    }
 
+//	    @EventListener(ApplicationReadyEvent.class)
+//	    public void startTradingAfterStartup() {
+//	        List<Instrument> instruments = instrumentRepository.findAll();
+//	        List<String> instrumentKeys = instruments.stream()
+//	                .map(Instrument::getInstrumentKey)
+//	                .collect(Collectors.toList());
+//	        algorithm.startTrading(instrumentKeys);
+//	    }
+
+//    @Autowired
+//    private ExcelDataService excelDataService;
+//
+//	@PostConstruct public void init() { excelDataService.loadDataFromExcel(); 
+//	
+//	}
+    
 }
 
 
